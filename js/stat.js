@@ -43,24 +43,23 @@ var printName = function (ctx, name, i) {
   ctx.fillText(name, CLOUD_X + BAR_GAP + i * (BAR_WIDTH + BAR_GAP), TEXT_Y + TEXT_GAP);
 };
 
-var getCurrentColor = function (name){
+var getCurrentColor = function (name) {
   return (name === 'Вы') ? 'rgba(255, 0, 0, 1)' : 'rgba(0, 0, 255, ' + (Math.random() + 0.1) + ')';
 };
 
-var drawCurrentBar = function (ctx, name, time, maxTime, playerBarHeight, i){
+var drawCurrentBar = function (ctx, name, time, maxTime, playerBarHeight, i) {
   var color = getCurrentColor(name);
   ctx.fillStyle = color;
   ctx.fillRect(CLOUD_X + BAR_GAP + i * (BAR_WIDTH + BAR_GAP), TEXT_Y - playerBarHeight, BAR_WIDTH, playerBarHeight);
 };
 
-var printTime = function (ctx, time, playerBarHeight, i){
+var printTime = function (ctx, time, playerBarHeight, i) {
   ctx.fillStyle = '#000';
   ctx.fillText(Math.round(time), CLOUD_X + BAR_GAP + i * (BAR_WIDTH + BAR_GAP), TEXT_Y - playerBarHeight - TEXT_HEIGHT);
 };
 
 var renderBarChart = function (ctx, names, times) {
   var maxTime = getMaxElement(times);
-  var color;
   var playerBarHeight;
   for (var i = 0; i < names.length; i++) {
     printName(ctx, names[i], i);
