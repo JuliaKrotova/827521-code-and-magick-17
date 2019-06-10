@@ -33,3 +33,5 @@ var getWizards = function (wizardsCount) {
   }
   return wizards;
 };
+
+getWizards();
