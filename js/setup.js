@@ -24,6 +24,8 @@ var wizardCoatElement = setupWizardElement.querySelector('.wizard-coat');
 var wizardEyesElement = setupWizardElement.querySelector('.wizard-eyes');
 var fireballElement = document.querySelector('.setup-fireball-wrap');
 var fireballInputElement = fireballElement.querySelector('input');
+var coatColorInputElement = document.querySelector('input[name="coat-color"]');
+var eyesColorInputElement = document.querySelector('input[name="eyes-color"]');
 
 var showElement = function (selector) {
   var element = document.querySelector(selector);
@@ -112,7 +114,9 @@ setupCloseElement.addEventListener('keydown', function (evt) {
 });
 
 var changeСoatColor = function () {
-  wizardCoatElement.style.fill = getRandomValueFrom(COAT_COLORS);
+  var newCoatColor = getRandomValueFrom(COAT_COLORS);
+  wizardCoatElement.style.fill = newCoatColor;
+  coatColorInputElement.value = newCoatColor;
 };
 
 wizardCoatElement.addEventListener('click', function () {
@@ -120,7 +124,9 @@ wizardCoatElement.addEventListener('click', function () {
 });
 
 var changeEyesColor = function () {
-  wizardEyesElement.style.fill = getRandomValueFrom(EYES_COLORS);
+  var newEyesColor = getRandomValueFrom(EYES_COLORS);
+  wizardEyesElement.style.fill = newEyesColor;
+  eyesColorInputElement.value = newEyesColor;
 };
 
 wizardEyesElement.addEventListener('click', function () {
