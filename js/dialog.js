@@ -18,6 +18,8 @@ var onPopupEscPress = function (evt) {
 var openPopup = function () {
   setupElement.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
+  setupElement.style.top = '';
+  setupElement.style.left = '';
 };
 
 var closePopup = function () {
@@ -33,7 +35,6 @@ setupOpenElement.addEventListener('click', function () {
 setupOpenIconElement.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     openPopup();
-    document.removeEventListener('mousemove', onMouseMove);
   }
 });
 
