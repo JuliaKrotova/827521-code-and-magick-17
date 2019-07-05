@@ -15,6 +15,7 @@
   var similarListElement = document.querySelector('.setup-similar-list');
   var setupElement = document.querySelector('.setup');
   var form = setupElement.querySelector('.setup-wizard-form');
+  var wizards = [];
 
   var similarWizardTemplate = document.querySelector('#similar-wizard-template')
       .content
@@ -34,7 +35,8 @@
     return wizardElement;
   };
 
-  var renderWizards = function (wizards) {
+  var renderWizards = function () {
+    similarListElement.innerHTML = '';
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < WIZARDS_COUNT; i++) {
       fragment.appendChild(renderWizard(wizards[i]));
@@ -50,14 +52,23 @@
       element.style.fill = newColor;
     }
     inputElement.value = newColor;
+    return newColor;
   };
 
+  var coatColor = 'rgb(101, 137, 164)';
   wizardCoatElement.addEventListener('click', function () {
-    setColor(COAT_COLORS, wizardCoatElement, coatColorInputElement);
+    window.debounce(function () {
+      coatColor = setColor(COAT_COLORS, wizardCoatElement, coatColorInputElement);
+      updateWizards();
+    });
   });
 
+  var eyesColor = 'black';
   wizardEyesElement.addEventListener('click', function () {
-    setColor(EYES_COLORS, wizardEyesElement, eyesColorInputElement);
+    window.debounce(function () {
+      eyesColor = setColor(EYES_COLORS, wizardEyesElement, eyesColorInputElement);
+      updateWizards();
+    });
   });
 
   fireballElement.addEventListener('click', function () {
@@ -80,10 +91,43 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  var onLoadHandler = function (wizards) {
-    renderWizards(wizards);
+  var onLoadHandler = function (data) {
+    wizards = data;
+    updateWizards();
     showElement('.setup-similar');
   };
 
+  var getRank = function (wizard) {
+    var rank = 0;
+    if (wizard.colorCoat === coatColor) {
+      rank += 2;
+    }
+    if (wizard.colorEyes === eyesColor) {
+      rank += 1;
+    }
+    return rank;
+  };
+
+  var namesComparator = function (left, right) {
+    if (left > right) {
+      return 1;
+    } else if (left < right) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+
+  var updateWizards = function () {
+    renderWizards(wizards.sort(function (left, right) {
+      var rankDiff = getRank(right) - getRank(left);
+      if (rankDiff === 0) {
+        rankDiff = namesComparator(left.name, right.name);
+      }
+      return rankDiff;
+    }));
+  };
+
   window.backend.load(onLoadHandler, onErrorHandler);
+
 })();
