@@ -55,20 +55,29 @@
     return newColor;
   };
 
+
+  var updateWizards = function () {
+    renderWizards(wizards.sort(function (left, right) {
+      var rankDiff = getRank(right) - getRank(left);
+      if (rankDiff === 0) {
+        rankDiff = namesComparator(left.name, right.name);
+      }
+      return rankDiff;
+    }));
+  };
+
+  var updateWizardsDebounced = window.debounce(updateWizards);
+
   var coatColor = 'rgb(101, 137, 164)';
   wizardCoatElement.addEventListener('click', function () {
-    window.debounce(function () {
-      coatColor = setColor(COAT_COLORS, wizardCoatElement, coatColorInputElement);
-      updateWizards();
-    });
+    coatColor = setColor(COAT_COLORS, wizardCoatElement, coatColorInputElement);
+    updateWizardsDebounced();
   });
 
   var eyesColor = 'black';
   wizardEyesElement.addEventListener('click', function () {
-    window.debounce(function () {
-      eyesColor = setColor(EYES_COLORS, wizardEyesElement, eyesColorInputElement);
-      updateWizards();
-    });
+    eyesColor = setColor(EYES_COLORS, wizardEyesElement, eyesColorInputElement);
+    updateWizardsDebounced();
   });
 
   fireballElement.addEventListener('click', function () {
@@ -76,7 +85,7 @@
   });
 
   form.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(form), onSubmitHandler, onErrorHandler);
+    window.backend.save(new FormData(form), onSubmitHandler, onLoadError);
     evt.preventDefault();
   });
 
@@ -84,14 +93,14 @@
     setupElement.classList.add('hidden');
   };
 
-  var onErrorHandler = function (errorMessage) {
+  var onLoadError = function (errorMessage) {
     var node = document.createElement('div');
     node.classList.add('errorMessage');
     node.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  var onLoadHandler = function (data) {
+  var onLoadSuccess = function (data) {
     wizards = data;
     updateWizards();
     showElement('.setup-similar');
@@ -110,7 +119,7 @@
 
   var namesComparator = function (left, right) {
     if (left > right) {
-      return 1;
+      return left - right;
     } else if (left < right) {
       return -1;
     } else {
@@ -118,16 +127,6 @@
     }
   };
 
-  var updateWizards = function () {
-    renderWizards(wizards.sort(function (left, right) {
-      var rankDiff = getRank(right) - getRank(left);
-      if (rankDiff === 0) {
-        rankDiff = namesComparator(left.name, right.name);
-      }
-      return rankDiff;
-    }));
-  };
-
-  window.backend.load(onLoadHandler, onErrorHandler);
+  window.backend.load(onLoadSuccess, onLoadError);
 
 })();
